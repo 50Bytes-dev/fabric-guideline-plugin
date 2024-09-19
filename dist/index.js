@@ -1,145 +1,57 @@
-import * as u from "fabric";
-const C = (o) => Object.keys(o), h = new u.Canvas("myCanvas", {
-  backgroundColor: "#F5F5F5"
-}), w = {};
-w.centerLine_horizontal = "";
-w.centerLine_vertical = "";
-w.alignmentLines_horizontal = "";
-w.alignmentLines_vertical = "";
-O();
-function A() {
-  const o = Math.floor((1 + Math.random()) * 256 / 2), t = Math.floor((1 + Math.random()) * 256 / 2), e = Math.floor((1 + Math.random()) * 256 / 2);
-  return "rgb(" + o + ", " + t + ", " + e + ")";
-}
-function O() {
-  w.outer = new u.Rect({
-    width: h.getWidth(),
-    height: h.getHeight(),
-    top: 20,
-    left: 20,
-    stroke: "#ffffff",
-    evented: !1,
-    fill: "#ececec",
-    selectable: !1
-  }), h.add(w.outer), h.renderAll(), typeof w.outer.center == "function" ? w.outer.center() : console.error("Method center is not available on fabric.Rect");
-  const o = ({
-    angle: n
-  } = { angle: 0 }) => new u.Rect({
-    width: Math.floor(Math.random() * 300),
-    height: Math.floor(Math.random() * 300),
-    top: Math.floor(Math.random() * h.getHeight()),
-    left: Math.floor(Math.random() * h.getWidth()),
-    fill: A(),
-    angle: n,
-    myType: "box"
-  }), t = 5, e = 1;
-  for (let n = 0; n < t; n++)
-    n < e ? h.add(o({ angle: Math.floor(Math.random() * 360) })) : h.add(o());
-  const i = h.getObjects().filter((n) => n.myType === "box");
-  if (i.length > 0) {
-    const n = P(i), s = h.getWidth(), r = h.getHeight(), a = (s - n.width) / 2, m = (r - n.height) / 2;
-    i.forEach((l) => {
-      l.set({
-        left: l.left + a - n.left,
-        top: l.top + m - n.top
-      });
-    }), h.renderAll();
-  }
-}
-function P(o) {
-  if (o.length === 0) return { left: 0, top: 0, width: 0, height: 0 };
-  const t = o.map((l) => l.left || 0), e = o.map((l) => l.top || 0), i = o.map((l) => (l.left || 0) + (l.width || 0)), n = o.map((l) => (l.top || 0) + (l.height || 0)), s = Math.min(...t), r = Math.min(...e), a = Math.max(...i), m = Math.max(...n);
-  return {
-    left: s,
-    top: r,
-    width: a - s,
-    height: m - r
-  };
-}
-let R = document.getElementById("reset");
-R.addEventListener(
-  "click",
-  function() {
-    B();
-  },
-  !1
-);
-function B() {
-  h.remove(...h.getObjects()), O(), h.setViewportTransform([1, 0, 0, 1, 0, 0]);
-}
-h.on("mouse:wheel", (o) => {
-  let t = 0, e = o.e.deltaY;
-  e && (t = e > 0 ? 1 : -1);
-  let i = h.getPointer(o.e), n = h.getZoom();
-  n = n - t / 10, n > 4 && (n = 4), n < 0.2 && (n = 0.2), h.zoomToPoint(new u.Point(i.x, i.y), n), o.e.preventDefault(), o.e.stopPropagation(), h.renderAll(), h.calcOffset();
-});
-function S({
-  canvas: o,
+import * as y from "fabric";
+const d = (a) => Object.keys(a);
+function H({
+  canvas: a,
   horizontalOffset: t = 4,
   verticalOffset: e = 4,
-  color: i = "purple"
+  color: n = "purple"
 }) {
-  if (!o) return;
-  let n = o.getWidth(), s = o.getHeight(), r = n / 2, a = s / 2, m = {}, l = {}, d = i, v = 1, y = o.getSelectionContext();
-  for (let x = r - t, p = r + t; x <= p; x++)
-    m[Math.round(x)] = !0;
-  for (let x = a - e, p = a + e; x <= p; x++)
-    l[Math.round(x)] = !0;
-  function c() {
-    M(
+  if (!a) return;
+  let s = a.getWidth(), o = a.getHeight(), i = s / 2, r = o / 2, M = {}, C = {}, g = n, L = 1, x = a.getSelectionContext();
+  for (let f = i - t, m = i + t; f <= m; f++)
+    M[Math.round(f)] = !0;
+  for (let f = r - e, m = r + e; f <= m; f++)
+    C[Math.round(f)] = !0;
+  function h() {
+    u(
       // canvasWidthCenter + 0.5,
-      r,
+      i,
       0,
-      r,
-      s
+      i,
+      o
     );
   }
-  function f() {
-    M(0, a, n, a);
+  function l() {
+    u(0, r, s, r);
   }
-  function M(x, p, T, W) {
-    const b = o.viewportTransform, z = u.util.transformPoint(new u.Point(x, p), b), H = u.util.transformPoint(new u.Point(T, W), b);
-    y.save(), y.strokeStyle = d, y.lineWidth = v, y.beginPath(), y.moveTo(z.x, z.y), y.lineTo(H.x, H.y), y.stroke(), y.restore();
+  function u(f, m, p, T) {
+    const v = a.viewportTransform, W = y.util.transformPoint(new y.Point(f, m), v), z = y.util.transformPoint(new y.Point(p, T), v);
+    x.save(), x.strokeStyle = g, x.lineWidth = L, x.beginPath(), x.moveTo(W.x, W.y), x.lineTo(z.x, z.y), x.stroke(), x.restore();
   }
-  let g = null, L = null;
-  o.on("mouse:down", () => {
-    g = null, L = null, w.centerLine_horizontal = "", w.centerLine_vertical = "", o.viewportTransform;
-  }), o.on("object:moving", function(x) {
-    let p = x.target, T = p.getCenterPoint();
-    o._currentTransform && (g = Math.round(T.x) in m, L = Math.round(T.y) in l, (L || g) && p.setPositionByOrigin(
-      new u.Point(
-        g ? r : T.x,
-        L ? a : T.y
+  let c = null, w = null;
+  a.on("mouse:down", () => {
+    c = null, w = null, a.viewportTransform;
+  }), a.on("object:moving", function(f) {
+    let m = f.target, p = m.getCenterPoint();
+    a._currentTransform && (c = Math.round(p.x) in M, w = Math.round(p.y) in C, (w || c) && m.setPositionByOrigin(
+      new y.Point(
+        c ? i : p.x,
+        w ? r : p.y
       ),
       "center",
       "center"
     ));
-  }), o.on("before:render", function() {
-    o.clearContext(o.contextTop);
-  }), o.on("object:modified", function() {
-    g = null, L = null, o.clearContext(o.contextTop), o.renderAll();
-  }), o.on("after:render", () => {
-    g && (c(), w.centerLine_horizontal = "", w.centerLine_vertical = r + 0.5 + ", 0, " + (r + 0.5) + ", " + s), L && f();
-  }), o.on("mouse:up", function() {
-    o.renderAll();
+  }), a.on("before:render", function() {
+    a.clearContext(a.contextTop);
+  }), a.on("object:modified", function() {
+    c = null, w = null, a.clearContext(a.contextTop), a.renderAll();
+  }), a.on("after:render", () => {
+    c && h(), w && l();
+  }), a.on("mouse:up", function() {
+    a.renderAll();
   });
 }
-const _ = new E({
-  canvas: h,
-  pickObjTypes: [{ key: "myType", value: "box" }],
-  aligningOptions: {
-    lineColor: "red",
-    lineWidth: 0.5,
-    horizontalOffset: 40,
-    verticalOffset: 40
-  }
-  // centerOptions: {
-  //   horizontalOffset: 10,
-  //   verticalOffset: 10
-  // }
-});
-_.init();
-class E {
+class b {
   aligningLineMargin = 4;
   aligningLineWidth = 0.75;
   aligningLineColor = "#F68066";
@@ -152,42 +64,42 @@ class E {
   viewportTransform;
   verticalLines = [];
   horizontalLines = [];
-  activeObj = new u.Object();
+  activeObj = new y.Object();
   constructor({
     canvas: t,
     aligningOptions: e,
-    ignoreObjTypes: i,
-    pickObjTypes: n
+    ignoreObjTypes: n,
+    pickObjTypes: s
   }) {
-    this.canvas = t, this.ctx = t.getSelectionContext(), this.ignoreObjTypes = i || [], this.pickObjTypes = n || [], e && (this.aligningLineMargin = e.lineMargin || this.aligningLineMargin, this.aligningLineWidth = e.lineWidth || this.aligningLineWidth, this.aligningLineColor = e.lineColor || this.aligningLineColor, this.verticalOffset = e.verticalOffset || this.verticalOffset, this.horizontalOffset = e.horizontalOffset || this.horizontalOffset);
+    this.canvas = t, this.ctx = t.getSelectionContext(), this.ignoreObjTypes = n || [], this.pickObjTypes = s || [], e && (this.aligningLineMargin = e.lineMargin || this.aligningLineMargin, this.aligningLineWidth = e.lineWidth || this.aligningLineWidth, this.aligningLineColor = e.lineColor || this.aligningLineColor, this.verticalOffset = e.verticalOffset || this.verticalOffset, this.horizontalOffset = e.horizontalOffset || this.horizontalOffset);
   }
   drawSign(t, e) {
-    const i = this.ctx;
-    i.lineWidth = 0.5, i.strokeStyle = this.aligningLineColor, i.beginPath();
-    const n = 2;
-    i.moveTo(t - n, e - n), i.lineTo(t + n, e + n), i.moveTo(t + n, e - n), i.lineTo(t - n, e + n), i.stroke();
+    const n = this.ctx;
+    n.lineWidth = 0.5, n.strokeStyle = this.aligningLineColor, n.beginPath();
+    const s = 2;
+    n.moveTo(t - s, e - s), n.lineTo(t + s, e + s), n.moveTo(t + s, e - s), n.lineTo(t - s, e + s), n.stroke();
   }
-  drawLine(t, e, i, n) {
-    const s = this.ctx, r = u.util.transformPoint(new u.Point(t, e), this.canvas.viewportTransform), a = u.util.transformPoint(new u.Point(i, n), this.canvas.viewportTransform);
-    s.save(), s.lineWidth = this.aligningLineWidth, s.strokeStyle = this.aligningLineColor, s.beginPath(), s.moveTo(r.x, r.y), s.lineTo(a.x, a.y), s.stroke(), this.drawSign(r.x, r.y), this.drawSign(a.x, a.y), s.restore();
+  drawLine(t, e, n, s) {
+    const o = this.ctx, i = y.util.transformPoint(new y.Point(t, e), this.canvas.viewportTransform), r = y.util.transformPoint(new y.Point(n, s), this.canvas.viewportTransform);
+    o.save(), o.lineWidth = this.aligningLineWidth, o.strokeStyle = this.aligningLineColor, o.beginPath(), o.moveTo(i.x, i.y), o.lineTo(r.x, r.y), o.stroke(), this.drawSign(i.x, i.y), this.drawSign(r.x, r.y), o.restore();
   }
   centerObjectInCanvas() {
     const t = {
       x: this.canvas.getWidth() / 2,
       y: this.canvas.getHeight() / 2
-    }, e = this.activeObj, i = e.getScaledWidth(), n = e.getScaledHeight();
+    }, e = this.activeObj, n = e.getScaledWidth(), s = e.getScaledHeight();
     e.set({
-      left: t.x - i / 2,
-      top: t.y - n / 2
+      left: t.x - n / 2,
+      top: t.y - s / 2
     }), e.setCoords(), this.canvas.renderAll();
   }
   drawVerticalLine(t) {
     const e = this.getObjDraggingObjCoords(this.activeObj);
-    C(e).some((i) => Math.abs(e[i].x - t.x) < 1e-4) && this.drawLine(t.x, Math.min(t.y1, t.y2), t.x, Math.max(t.y1, t.y2));
+    d(e).some((n) => Math.abs(e[n].x - t.x) < 1e-4) && this.drawLine(t.x, Math.min(t.y1, t.y2), t.x, Math.max(t.y1, t.y2));
   }
   drawHorizontalLine(t) {
     const e = this.getObjDraggingObjCoords(this.activeObj);
-    C(e).some((i) => Math.abs(e[i].y - t.y) < 1e-4) && this.drawLine(Math.min(t.x1, t.x2), t.y, Math.max(t.x1, t.x2), t.y);
+    d(e).some((n) => Math.abs(e[n].y - t.y) < 1e-4) && this.drawLine(Math.min(t.x1, t.x2), t.y, Math.max(t.x1, t.x2), t.y);
   }
   isInRange(t, e) {
     return Math.abs(Math.round(t) - Math.round(e)) <= this.aligningLineMargin / this.canvas.getZoom();
@@ -215,18 +127,18 @@ class E {
       this.clearLinesMeta();
       const e = t.target;
       this.activeObj = e;
-      const i = this.canvas.getObjects().filter((s) => this.ignoreObjTypes.length ? !this.ignoreObjTypes.some((r) => s[r.key] === r.value) : this.pickObjTypes.length ? this.pickObjTypes.some((r) => s[r.key] === r.value) : !0);
-      this.canvas._currentTransform && this.traversAllObjects(e, i);
+      const n = this.canvas.getObjects().filter((o) => this.ignoreObjTypes.length ? !this.ignoreObjTypes.some((i) => o[i.key] === i.value) : this.pickObjTypes.length ? this.pickObjTypes.some((i) => o[i.key] === i.value) : !0);
+      this.canvas._currentTransform && this.traversAllObjects(e, n);
     });
   }
   getObjDraggingObjCoords(t) {
-    const e = t.aCoords, i = new u.Point((e.tl.x + e.br.x) / 2, (e.tl.y + e.br.y) / 2), n = i.x - t.getCenterPoint().x, s = i.y - t.getCenterPoint().y;
-    return C(e).reduce(
-      (r, a) => ({
-        ...r,
-        [a]: {
-          x: e[a].x - n,
-          y: e[a].y - s
+    const e = t.aCoords, n = new y.Point((e.tl.x + e.br.x) / 2, (e.tl.y + e.br.y) / 2), s = n.x - t.getCenterPoint().x, o = n.y - t.getCenterPoint().y;
+    return d(e).reduce(
+      (i, r) => ({
+        ...i,
+        [r]: {
+          x: e[r].x - s,
+          y: e[r].y - o
         }
       }),
       {
@@ -236,116 +148,116 @@ class E {
   }
   // 当对象被旋转时，需要忽略一些坐标，例如水平辅助线只取最上、下边的坐标（参考 figma）
   omitCoords(t, e) {
-    let i;
+    let n;
     if (e === "vertical") {
-      let n = ["tl", t.tl], s = ["tl", t.tl];
-      C(t).forEach((r) => {
-        t[r].x < n[1].x && (n = [r, t[r]]), t[r].x > s[1].x && (s = [r, t[r]]);
-      }), i = {
-        [n[0]]: n[1],
+      let s = ["tl", t.tl], o = ["tl", t.tl];
+      d(t).forEach((i) => {
+        t[i].x < s[1].x && (s = [i, t[i]]), t[i].x > o[1].x && (o = [i, t[i]]);
+      }), n = {
         [s[0]]: s[1],
+        [o[0]]: o[1],
         c: t.c
       };
     } else {
-      let n = ["tl", t.tl], s = ["tl", t.tl];
-      C(t).forEach((r) => {
-        t[r].y < n[1].y && (n = [r, t[r]]), t[r].y > s[1].y && (s = [r, t[r]]);
-      }), i = {
-        [n[0]]: n[1],
+      let s = ["tl", t.tl], o = ["tl", t.tl];
+      d(t).forEach((i) => {
+        t[i].y < s[1].y && (s = [i, t[i]]), t[i].y > o[1].y && (o = [i, t[i]]);
+      }), n = {
         [s[0]]: s[1],
+        [o[0]]: o[1],
         c: t.c
       };
     }
-    return i;
+    return n;
   }
   getObjMaxWidthHeightByCoords(t) {
-    const e = Math.max(Math.abs(t.c.y - t.tl.y), Math.abs(t.c.y - t.tr.y)) * 2, i = Math.max(Math.abs(t.c.x - t.tl.x), Math.abs(t.c.x - t.tr.x)) * 2;
-    return { objHeight: e, objWidth: i };
+    const e = Math.max(Math.abs(t.c.y - t.tl.y), Math.abs(t.c.y - t.tr.y)) * 2, n = Math.max(Math.abs(t.c.x - t.tl.x), Math.abs(t.c.x - t.tr.x)) * 2;
+    return { objHeight: e, objWidth: n };
   }
   /**
    * fabric.Object.getCenterPoint will return the center point of the object calc by mouse moving & dragging distance.
    * calcCenterPointByACoords will return real center point of the object position.
    */
   calcCenterPointByACoords(t) {
-    return new u.Point((t.tl.x + t.br.x) / 2, (t.tl.y + t.br.y) / 2);
+    return new y.Point((t.tl.x + t.br.x) / 2, (t.tl.y + t.br.y) / 2);
   }
   traversAllObjects(t, e) {
-    const i = this.getObjDraggingObjCoords(t), n = [], s = [];
-    for (let r = e.length; r--; ) {
-      if (e[r] === t) continue;
-      const a = {
-        ...e[r].aCoords,
-        c: e[r].getCenterPoint()
-      }, { objHeight: m, objWidth: l } = this.getObjMaxWidthHeightByCoords(a);
-      C(i).forEach((d) => {
-        const v = e[r].angle !== 0 ? this.omitCoords(a, "horizontal") : a;
-        function y(c, f) {
-          let M, g;
-          return c === "c" ? (M = Math.min(a.c.x - l / 2, f[d].x), g = Math.max(a.c.x + l / 2, f[d].x)) : (M = Math.min(a[c].x, f[d].x), g = Math.max(a[c].x, f[d].x)), { x1: M, x2: g };
+    const n = this.getObjDraggingObjCoords(t), s = [], o = [];
+    for (let i = e.length; i--; ) {
+      if (e[i] === t) continue;
+      const r = {
+        ...e[i].aCoords,
+        c: e[i].getCenterPoint()
+      }, { objHeight: M, objWidth: C } = this.getObjMaxWidthHeightByCoords(r);
+      d(n).forEach((g) => {
+        const L = e[i].angle !== 0 ? this.omitCoords(r, "horizontal") : r;
+        function x(h, l) {
+          let u, c;
+          return h === "c" ? (u = Math.min(r.c.x - C / 2, l[g].x), c = Math.max(r.c.x + C / 2, l[g].x)) : (u = Math.min(r[h].x, l[g].x), c = Math.max(r[h].x, l[g].x)), { x1: u, x2: c };
         }
-        C(v).forEach((c) => {
-          if (this.isInRange(i[d].y, a[c].y)) {
-            const f = a[c].y;
-            let { x1: M, x2: g } = y(c, i);
-            const L = i[d].y - f;
-            if (s.push(i.c.y - L), t.aCoords) {
-              let { x1: x, x2: p } = y(
-                c,
+        d(L).forEach((h) => {
+          if (this.isInRange(n[g].y, r[h].y)) {
+            const l = r[h].y;
+            let { x1: u, x2: c } = x(h, n);
+            const w = n[g].y - l;
+            if (o.push(n.c.y - w), t.aCoords) {
+              let { x1: f, x2: m } = x(
+                h,
                 {
                   ...t.aCoords,
                   c: this.calcCenterPointByACoords(t.aCoords)
                 }
               );
-              this.horizontalLines.push({ y: f, x1: x, x2: p });
+              this.horizontalLines.push({ y: l, x1: f, x2: m });
             } else
-              this.horizontalLines.push({ y: f, x1: M, x2: g });
+              this.horizontalLines.push({ y: l, x1: u, x2: c });
           }
         });
-      }), C(i).forEach((d) => {
-        const v = e[r].angle !== 0 ? this.omitCoords(a, "vertical") : a;
-        function y(c, f) {
-          let M, g;
-          return c === "c" ? (M = Math.min(v.c.y - m / 2, f[d].y), g = Math.max(v.c.y + m / 2, f[d].y)) : (M = Math.min(a[c].y, f[d].y), g = Math.max(a[c].y, f[d].y)), { y1: M, y2: g };
+      }), d(n).forEach((g) => {
+        const L = e[i].angle !== 0 ? this.omitCoords(r, "vertical") : r;
+        function x(h, l) {
+          let u, c;
+          return h === "c" ? (u = Math.min(L.c.y - M / 2, l[g].y), c = Math.max(L.c.y + M / 2, l[g].y)) : (u = Math.min(r[h].y, l[g].y), c = Math.max(r[h].y, l[g].y)), { y1: u, y2: c };
         }
-        C(v).forEach((c) => {
-          if (this.isInRange(i[d].x, a[c].x)) {
-            const f = a[c].x;
-            let { y1: M, y2: g } = y(c, i);
-            const L = i[d].x - f;
-            if (n.push(i.c.x - L), t.aCoords) {
-              let { y1: x, y2: p } = y(
-                c,
+        d(L).forEach((h) => {
+          if (this.isInRange(n[g].x, r[h].x)) {
+            const l = r[h].x;
+            let { y1: u, y2: c } = x(h, n);
+            const w = n[g].x - l;
+            if (s.push(n.c.x - w), t.aCoords) {
+              let { y1: f, y2: m } = x(
+                h,
                 {
                   ...t.aCoords,
                   c: this.calcCenterPointByACoords(t.aCoords)
                 }
               );
-              this.verticalLines.push({ x: f, y1: x, y2: p });
+              this.verticalLines.push({ x: l, y1: f, y2: m });
             } else
-              this.verticalLines.push({ x: f, y1: M, y2: g });
+              this.verticalLines.push({ x: l, y1: u, y2: c });
           }
         });
       }), this.snap({
         activeObject: t,
-        draggingObjCoords: i,
-        snapXPoints: n,
-        snapYPoints: s
+        draggingObjCoords: n,
+        snapXPoints: s,
+        snapYPoints: o
       });
     }
   }
   snap({
     activeObject: t,
     snapXPoints: e,
-    draggingObjCoords: i,
-    snapYPoints: n
+    draggingObjCoords: n,
+    snapYPoints: s
   }) {
-    const s = (r, a) => r.length ? r.map((m) => ({
-      abs: Math.abs(a - m),
-      val: m
-    })).sort((m, l) => m.abs - l.abs)[0].val : a;
+    const o = (i, r) => i.length ? i.map((M) => ({
+      abs: Math.abs(r - M),
+      val: M
+    })).sort((M, C) => M.abs - C.abs)[0].val : r;
     t.setPositionByOrigin(
       // auto snap nearest object, record all the snap points, and then find the nearest one
-      new u.Point(s(e, i.c.x), s(n, i.c.y)),
+      new y.Point(o(e, n.c.x), o(s, n.c.y)),
       "center",
       "center"
     );
@@ -365,7 +277,7 @@ class E {
     });
   }
   init() {
-    this.watchObjectMoving(), this.watchRender(), this.watchMouseDown(), this.watchMouseUp(), this.watchMouseWheel(), this.centerObjectInCanvas(), S({
+    this.watchObjectMoving(), this.watchRender(), this.watchMouseDown(), this.watchMouseUp(), this.watchMouseWheel(), this.centerObjectInCanvas(), H({
       canvas: this.canvas,
       horizontalOffset: this.horizontalOffset,
       verticalOffset: this.verticalOffset,
@@ -374,5 +286,5 @@ class E {
   }
 }
 export {
-  E as AlignGuidelines
+  b as AlignGuidelines
 };
