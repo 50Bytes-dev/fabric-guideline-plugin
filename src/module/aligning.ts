@@ -268,16 +268,20 @@ export class AlignGuidelines {
         Keys(newCoords).forEach((objPoint) => {
           if (this.isInRange(objCoordsByMovingDistance[activeObjPoint].y, objCoords[objPoint].y)) {
             const y = objCoords[objPoint].y;
-            let { x1, x2 } = calcHorizontalLineCoords(objPoint, objCoordsByMovingDistance);
+
+            let { x1, x2 } = calcHorizontalLineCoords(objPoint as any, objCoordsByMovingDistance);
 
             const offset = objCoordsByMovingDistance[activeObjPoint].y - y;
             snapYPoints.push(objCoordsByMovingDistance.c.y - offset);
 
             if (activeObject.aCoords) {
-              let { x1, x2 } = calcHorizontalLineCoords(objPoint, {
-                ...activeObject.aCoords,
-                c: this.calcCenterPointByACoords(activeObject.aCoords),
-              } as ACoordsAppendCenter);
+              let { x1, x2 } = calcHorizontalLineCoords(
+                objPoint as any,
+                {
+                  ...activeObject.aCoords,
+                  c: this.calcCenterPointByACoords(activeObject.aCoords),
+                } as ACoordsAppendCenter
+              );
               this.horizontalLines.push({ y, x1, x2 });
             } else {
               this.horizontalLines.push({ y, x1, x2 });
@@ -304,16 +308,19 @@ export class AlignGuidelines {
         Keys(newCoords).forEach((objPoint) => {
           if (this.isInRange(objCoordsByMovingDistance[activeObjPoint].x, objCoords[objPoint].x)) {
             const x = objCoords[objPoint].x;
-            let { y1, y2 } = calcVerticalLineCoords(objPoint, objCoordsByMovingDistance);
+            let { y1, y2 } = calcVerticalLineCoords(objPoint as any, objCoordsByMovingDistance);
 
             const offset = objCoordsByMovingDistance[activeObjPoint].x - x;
             snapXPoints.push(objCoordsByMovingDistance.c.x - offset);
 
             if (activeObject.aCoords) {
-              let { y1, y2 } = calcVerticalLineCoords(objPoint, {
-                ...activeObject.aCoords,
-                c: this.calcCenterPointByACoords(activeObject.aCoords),
-              } as ACoordsAppendCenter);
+              let { y1, y2 } = calcVerticalLineCoords(
+                objPoint as any,
+                {
+                  ...activeObject.aCoords,
+                  c: this.calcCenterPointByACoords(activeObject.aCoords),
+                } as ACoordsAppendCenter
+              );
               this.verticalLines.push({ x, y1, y2 });
             } else {
               this.verticalLines.push({ x, y1, y2 });

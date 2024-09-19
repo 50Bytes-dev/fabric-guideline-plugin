@@ -32,11 +32,11 @@ class d {
   }
   drawVerticalLine(t) {
     const n = this.getObjDraggingObjCoords(this.activeObj);
-    !x(n).some((i) => Math.abs(n[i].x - t.x) < 1e-4) || this.drawLine(t.x, Math.min(t.y1, t.y2), t.x, Math.max(t.y1, t.y2));
+    x(n).some((i) => Math.abs(n[i].x - t.x) < 1e-4) && this.drawLine(t.x, Math.min(t.y1, t.y2), t.x, Math.max(t.y1, t.y2));
   }
   drawHorizontalLine(t) {
     const n = this.getObjDraggingObjCoords(this.activeObj);
-    !x(n).some((i) => Math.abs(n[i].y - t.y) < 1e-4) || this.drawLine(Math.min(t.x1, t.x2), t.y, Math.max(t.x1, t.x2), t.y);
+    x(n).some((i) => Math.abs(n[i].y - t.y) < 1e-4) && this.drawLine(Math.min(t.x1, t.x2), t.y, Math.max(t.x1, t.x2), t.y);
   }
   isInRange(t, n) {
     return Math.abs(Math.round(t) - Math.round(n)) <= this.aligningLineMargin / this.canvas.getZoom();
@@ -65,7 +65,7 @@ class d {
       const n = t.target;
       this.activeObj = n;
       const i = this.canvas.getObjects().filter((a) => this.ignoreObjTypes.length ? !this.ignoreObjTypes.some((e) => a[e.key] === e.value) : this.pickObjTypes.length ? this.pickObjTypes.some((e) => a[e.key] === e.value) : !0);
-      !this.canvas._currentTransform || this.traversAllObjects(n, i);
+      this.canvas._currentTransform && this.traversAllObjects(n, i);
     });
   }
   getObjDraggingObjCoords(t) {
@@ -83,6 +83,7 @@ class d {
       }
     );
   }
+  // 当对象被旋转时，需要忽略一些坐标，例如水平辅助线只取最上、下边的坐标（参考 figma）
   omitCoords(t, n) {
     let i;
     if (n === "vertical") {
@@ -110,14 +111,17 @@ class d {
     const n = Math.max(Math.abs(t.c.y - t.tl.y), Math.abs(t.c.y - t.tr.y)) * 2, i = Math.max(Math.abs(t.c.x - t.tl.x), Math.abs(t.c.x - t.tr.x)) * 2;
     return { objHeight: n, objWidth: i };
   }
+  /**
+   * fabric.Object.getCenterPoint will return the center point of the object calc by mouse moving & dragging distance.
+   * calcCenterPointByACoords will return real center point of the object position.
+   */
   calcCenterPointByACoords(t) {
     return new y.Point((t.tl.x + t.br.x) / 2, (t.tl.y + t.br.y) / 2);
   }
   traversAllObjects(t, n) {
     const i = this.getObjDraggingObjCoords(t), s = [], a = [];
     for (let e = n.length; e--; ) {
-      if (n[e] === t)
-        continue;
+      if (n[e] === t) continue;
       const r = {
         ...n[e].aCoords,
         c: n[e].getCenterPoint()
@@ -134,10 +138,13 @@ class d {
             let { x1: c, x2: g } = M(h, i);
             const L = i[o].y - l;
             if (a.push(i.c.y - L), t.aCoords) {
-              let { x1: w, x2: p } = M(h, {
-                ...t.aCoords,
-                c: this.calcCenterPointByACoords(t.aCoords)
-              });
+              let { x1: w, x2: p } = M(
+                h,
+                {
+                  ...t.aCoords,
+                  c: this.calcCenterPointByACoords(t.aCoords)
+                }
+              );
               this.horizontalLines.push({ y: l, x1: w, x2: p });
             } else
               this.horizontalLines.push({ y: l, x1: c, x2: g });
@@ -155,10 +162,13 @@ class d {
             let { y1: c, y2: g } = M(h, i);
             const L = i[o].x - l;
             if (s.push(i.c.x - L), t.aCoords) {
-              let { y1: w, y2: p } = M(h, {
-                ...t.aCoords,
-                c: this.calcCenterPointByACoords(t.aCoords)
-              });
+              let { y1: w, y2: p } = M(
+                h,
+                {
+                  ...t.aCoords,
+                  c: this.calcCenterPointByACoords(t.aCoords)
+                }
+              );
               this.verticalLines.push({ x: l, y1: w, y2: p });
             } else
               this.verticalLines.push({ x: l, y1: c, y2: g });
@@ -183,6 +193,7 @@ class d {
       val: f
     })).sort((f, m) => f.abs - m.abs)[0].val : r;
     t.setPositionByOrigin(
+      // auto snap nearest object, record all the snap points, and then find the nearest one
       new y.Point(a(n, i.c.x), a(s, i.c.y)),
       "center",
       "center"
