@@ -1,5 +1,5 @@
 import * as u from "fabric";
-const C = (s) => Object.keys(s), h = new u.Canvas("myCanvas", {
+const C = (o) => Object.keys(o), h = new u.Canvas("myCanvas", {
   backgroundColor: "#F5F5F5"
 }), w = {};
 w.centerLine_horizontal = "";
@@ -8,8 +8,8 @@ w.alignmentLines_horizontal = "";
 w.alignmentLines_vertical = "";
 O();
 function A() {
-  const s = Math.floor((1 + Math.random()) * 256 / 2), t = Math.floor((1 + Math.random()) * 256 / 2), e = Math.floor((1 + Math.random()) * 256 / 2);
-  return "rgb(" + s + ", " + t + ", " + e + ")";
+  const o = Math.floor((1 + Math.random()) * 256 / 2), t = Math.floor((1 + Math.random()) * 256 / 2), e = Math.floor((1 + Math.random()) * 256 / 2);
+  return "rgb(" + o + ", " + t + ", " + e + ")";
 }
 function O() {
   w.outer = new u.Rect({
@@ -22,7 +22,7 @@ function O() {
     fill: "#ececec",
     selectable: !1
   }), h.add(w.outer), h.renderAll(), typeof w.outer.center == "function" ? w.outer.center() : console.error("Method center is not available on fabric.Rect");
-  const s = ({
+  const o = ({
     angle: n
   } = { angle: 0 }) => new u.Rect({
     width: Math.floor(Math.random() * 300),
@@ -34,10 +34,10 @@ function O() {
     myType: "box"
   }), t = 5, e = 1;
   for (let n = 0; n < t; n++)
-    n < e ? h.add(s({ angle: Math.floor(Math.random() * 360) })) : h.add(s());
+    n < e ? h.add(o({ angle: Math.floor(Math.random() * 360) })) : h.add(o());
   const i = h.getObjects().filter((n) => n.myType === "box");
   if (i.length > 0) {
-    const n = P(i), o = h.getWidth(), r = h.getHeight(), a = (o - n.width) / 2, m = (r - n.height) / 2;
+    const n = P(i), s = h.getWidth(), r = h.getHeight(), a = (s - n.width) / 2, m = (r - n.height) / 2;
     i.forEach((l) => {
       l.set({
         left: l.left + a - n.left,
@@ -46,13 +46,13 @@ function O() {
     }), h.renderAll();
   }
 }
-function P(s) {
-  if (s.length === 0) return { left: 0, top: 0, width: 0, height: 0 };
-  const t = s.map((l) => l.left || 0), e = s.map((l) => l.top || 0), i = s.map((l) => (l.left || 0) + (l.width || 0)), n = s.map((l) => (l.top || 0) + (l.height || 0)), o = Math.min(...t), r = Math.min(...e), a = Math.max(...i), m = Math.max(...n);
+function P(o) {
+  if (o.length === 0) return { left: 0, top: 0, width: 0, height: 0 };
+  const t = o.map((l) => l.left || 0), e = o.map((l) => l.top || 0), i = o.map((l) => (l.left || 0) + (l.width || 0)), n = o.map((l) => (l.top || 0) + (l.height || 0)), s = Math.min(...t), r = Math.min(...e), a = Math.max(...i), m = Math.max(...n);
   return {
-    left: o,
+    left: s,
     top: r,
-    width: a - o,
+    width: a - s,
     height: m - r
   };
 }
@@ -67,19 +67,20 @@ R.addEventListener(
 function B() {
   h.remove(...h.getObjects()), O(), h.setViewportTransform([1, 0, 0, 1, 0, 0]);
 }
-h.on("mouse:wheel", (s) => {
-  let t = 0, e = s.e.deltaY;
+h.on("mouse:wheel", (o) => {
+  let t = 0, e = o.e.deltaY;
   e && (t = e > 0 ? 1 : -1);
-  let i = h.getPointer(s.e), n = h.getZoom();
-  n = n - t / 10, n > 4 && (n = 4), n < 0.2 && (n = 0.2), h.zoomToPoint(new u.Point(i.x, i.y), n), s.e.preventDefault(), s.e.stopPropagation(), h.renderAll(), h.calcOffset();
+  let i = h.getPointer(o.e), n = h.getZoom();
+  n = n - t / 10, n > 4 && (n = 4), n < 0.2 && (n = 0.2), h.zoomToPoint(new u.Point(i.x, i.y), n), o.e.preventDefault(), o.e.stopPropagation(), h.renderAll(), h.calcOffset();
 });
 function S({
-  canvas: s,
+  canvas: o,
   horizontalOffset: t = 4,
   verticalOffset: e = 4,
   color: i = "purple"
 }) {
-  let n = s.getWidth(), o = s.getHeight(), r = n / 2, a = o / 2, m = {}, l = {}, d = i, v = 1, y = s.getSelectionContext();
+  if (!o) return;
+  let n = o.getWidth(), s = o.getHeight(), r = n / 2, a = s / 2, m = {}, l = {}, d = i, v = 1, y = o.getSelectionContext();
   for (let x = r - t, p = r + t; x <= p; x++)
     m[Math.round(x)] = !0;
   for (let x = a - e, p = a + e; x <= p; x++)
@@ -90,22 +91,22 @@ function S({
       r,
       0,
       r,
-      o
+      s
     );
   }
   function f() {
     M(0, a, n, a);
   }
   function M(x, p, T, W) {
-    const b = s.viewportTransform, z = u.util.transformPoint(new u.Point(x, p), b), H = u.util.transformPoint(new u.Point(T, W), b);
+    const b = o.viewportTransform, z = u.util.transformPoint(new u.Point(x, p), b), H = u.util.transformPoint(new u.Point(T, W), b);
     y.save(), y.strokeStyle = d, y.lineWidth = v, y.beginPath(), y.moveTo(z.x, z.y), y.lineTo(H.x, H.y), y.stroke(), y.restore();
   }
   let g = null, L = null;
-  s.on("mouse:down", () => {
-    g = null, L = null, w.centerLine_horizontal = "", w.centerLine_vertical = "", s.viewportTransform;
-  }), s.on("object:moving", function(x) {
+  o.on("mouse:down", () => {
+    g = null, L = null, w.centerLine_horizontal = "", w.centerLine_vertical = "", o.viewportTransform;
+  }), o.on("object:moving", function(x) {
     let p = x.target, T = p.getCenterPoint();
-    s._currentTransform && (g = Math.round(T.x) in m, L = Math.round(T.y) in l, (L || g) && p.setPositionByOrigin(
+    o._currentTransform && (g = Math.round(T.x) in m, L = Math.round(T.y) in l, (L || g) && p.setPositionByOrigin(
       new u.Point(
         g ? r : T.x,
         L ? a : T.y
@@ -113,14 +114,14 @@ function S({
       "center",
       "center"
     ));
-  }), s.on("before:render", function() {
-    s.clearContext(s.contextTop);
-  }), s.on("object:modified", function() {
-    g = null, L = null, s.clearContext(s.contextTop), s.renderAll();
-  }), s.on("after:render", () => {
-    g && (c(), w.centerLine_horizontal = "", w.centerLine_vertical = r + 0.5 + ", 0, " + (r + 0.5) + ", " + o), L && f();
-  }), s.on("mouse:up", function() {
-    s.renderAll();
+  }), o.on("before:render", function() {
+    o.clearContext(o.contextTop);
+  }), o.on("object:modified", function() {
+    g = null, L = null, o.clearContext(o.contextTop), o.renderAll();
+  }), o.on("after:render", () => {
+    g && (c(), w.centerLine_horizontal = "", w.centerLine_vertical = r + 0.5 + ", 0, " + (r + 0.5) + ", " + s), L && f();
+  }), o.on("mouse:up", function() {
+    o.renderAll();
   });
 }
 const _ = new E({
@@ -167,8 +168,8 @@ class E {
     i.moveTo(t - n, e - n), i.lineTo(t + n, e + n), i.moveTo(t + n, e - n), i.lineTo(t - n, e + n), i.stroke();
   }
   drawLine(t, e, i, n) {
-    const o = this.ctx, r = u.util.transformPoint(new u.Point(t, e), this.canvas.viewportTransform), a = u.util.transformPoint(new u.Point(i, n), this.canvas.viewportTransform);
-    o.save(), o.lineWidth = this.aligningLineWidth, o.strokeStyle = this.aligningLineColor, o.beginPath(), o.moveTo(r.x, r.y), o.lineTo(a.x, a.y), o.stroke(), this.drawSign(r.x, r.y), this.drawSign(a.x, a.y), o.restore();
+    const s = this.ctx, r = u.util.transformPoint(new u.Point(t, e), this.canvas.viewportTransform), a = u.util.transformPoint(new u.Point(i, n), this.canvas.viewportTransform);
+    s.save(), s.lineWidth = this.aligningLineWidth, s.strokeStyle = this.aligningLineColor, s.beginPath(), s.moveTo(r.x, r.y), s.lineTo(a.x, a.y), s.stroke(), this.drawSign(r.x, r.y), this.drawSign(a.x, a.y), s.restore();
   }
   centerObjectInCanvas() {
     const t = {
@@ -214,18 +215,18 @@ class E {
       this.clearLinesMeta();
       const e = t.target;
       this.activeObj = e;
-      const i = this.canvas.getObjects().filter((o) => this.ignoreObjTypes.length ? !this.ignoreObjTypes.some((r) => o[r.key] === r.value) : this.pickObjTypes.length ? this.pickObjTypes.some((r) => o[r.key] === r.value) : !0);
+      const i = this.canvas.getObjects().filter((s) => this.ignoreObjTypes.length ? !this.ignoreObjTypes.some((r) => s[r.key] === r.value) : this.pickObjTypes.length ? this.pickObjTypes.some((r) => s[r.key] === r.value) : !0);
       this.canvas._currentTransform && this.traversAllObjects(e, i);
     });
   }
   getObjDraggingObjCoords(t) {
-    const e = t.aCoords, i = new u.Point((e.tl.x + e.br.x) / 2, (e.tl.y + e.br.y) / 2), n = i.x - t.getCenterPoint().x, o = i.y - t.getCenterPoint().y;
+    const e = t.aCoords, i = new u.Point((e.tl.x + e.br.x) / 2, (e.tl.y + e.br.y) / 2), n = i.x - t.getCenterPoint().x, s = i.y - t.getCenterPoint().y;
     return C(e).reduce(
       (r, a) => ({
         ...r,
         [a]: {
           x: e[a].x - n,
-          y: e[a].y - o
+          y: e[a].y - s
         }
       }),
       {
@@ -237,21 +238,21 @@ class E {
   omitCoords(t, e) {
     let i;
     if (e === "vertical") {
-      let n = ["tl", t.tl], o = ["tl", t.tl];
+      let n = ["tl", t.tl], s = ["tl", t.tl];
       C(t).forEach((r) => {
-        t[r].x < n[1].x && (n = [r, t[r]]), t[r].x > o[1].x && (o = [r, t[r]]);
+        t[r].x < n[1].x && (n = [r, t[r]]), t[r].x > s[1].x && (s = [r, t[r]]);
       }), i = {
         [n[0]]: n[1],
-        [o[0]]: o[1],
+        [s[0]]: s[1],
         c: t.c
       };
     } else {
-      let n = ["tl", t.tl], o = ["tl", t.tl];
+      let n = ["tl", t.tl], s = ["tl", t.tl];
       C(t).forEach((r) => {
-        t[r].y < n[1].y && (n = [r, t[r]]), t[r].y > o[1].y && (o = [r, t[r]]);
+        t[r].y < n[1].y && (n = [r, t[r]]), t[r].y > s[1].y && (s = [r, t[r]]);
       }), i = {
         [n[0]]: n[1],
-        [o[0]]: o[1],
+        [s[0]]: s[1],
         c: t.c
       };
     }
@@ -269,7 +270,7 @@ class E {
     return new u.Point((t.tl.x + t.br.x) / 2, (t.tl.y + t.br.y) / 2);
   }
   traversAllObjects(t, e) {
-    const i = this.getObjDraggingObjCoords(t), n = [], o = [];
+    const i = this.getObjDraggingObjCoords(t), n = [], s = [];
     for (let r = e.length; r--; ) {
       if (e[r] === t) continue;
       const a = {
@@ -287,7 +288,7 @@ class E {
             const f = a[c].y;
             let { x1: M, x2: g } = y(c, i);
             const L = i[d].y - f;
-            if (o.push(i.c.y - L), t.aCoords) {
+            if (s.push(i.c.y - L), t.aCoords) {
               let { x1: x, x2: p } = y(
                 c,
                 {
@@ -328,7 +329,7 @@ class E {
         activeObject: t,
         draggingObjCoords: i,
         snapXPoints: n,
-        snapYPoints: o
+        snapYPoints: s
       });
     }
   }
@@ -338,13 +339,13 @@ class E {
     draggingObjCoords: i,
     snapYPoints: n
   }) {
-    const o = (r, a) => r.length ? r.map((m) => ({
+    const s = (r, a) => r.length ? r.map((m) => ({
       abs: Math.abs(a - m),
       val: m
     })).sort((m, l) => m.abs - l.abs)[0].val : a;
     t.setPositionByOrigin(
       // auto snap nearest object, record all the snap points, and then find the nearest one
-      new u.Point(o(e, i.c.x), o(n, i.c.y)),
+      new u.Point(s(e, i.c.x), s(n, i.c.y)),
       "center",
       "center"
     );
@@ -364,12 +365,12 @@ class E {
     });
   }
   init() {
-    S({
+    this.watchObjectMoving(), this.watchRender(), this.watchMouseDown(), this.watchMouseUp(), this.watchMouseWheel(), this.centerObjectInCanvas(), S({
       canvas: this.canvas,
       horizontalOffset: this.horizontalOffset,
       verticalOffset: this.verticalOffset,
       color: this.aligningLineColor
-    }), this.watchObjectMoving(), this.watchRender(), this.watchMouseDown(), this.watchMouseUp(), this.watchMouseWheel(), this.centerObjectInCanvas();
+    });
   }
 }
 export {

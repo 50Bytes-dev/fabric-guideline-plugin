@@ -183,6 +183,7 @@ function initCenteringGuidelines({
   verticalOffset = 4,
   color = "purple",
 }: CenteringGuidelines) {
+  if (!canvas) return;
   let canvasWidth = canvas.getWidth(),
     canvasHeight = canvas.getHeight(),
     canvasWidthCenter = canvasWidth / 2,

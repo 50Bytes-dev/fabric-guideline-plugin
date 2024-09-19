@@ -416,17 +416,17 @@ export class AlignGuidelines {
   }
 
   init() {
-    initCenteringGuidelines({
-      canvas: this.canvas,
-      horizontalOffset: this.horizontalOffset,
-      verticalOffset: this.verticalOffset,
-      color: this.aligningLineColor,
-    });
     this.watchObjectMoving();
     this.watchRender();
     this.watchMouseDown();
     this.watchMouseUp();
     this.watchMouseWheel();
     this.centerObjectInCanvas();
+    initCenteringGuidelines({
+      canvas: this.canvas,
+      horizontalOffset: this.horizontalOffset,
+      verticalOffset: this.verticalOffset,
+      color: this.aligningLineColor,
+    });
   }
 }
