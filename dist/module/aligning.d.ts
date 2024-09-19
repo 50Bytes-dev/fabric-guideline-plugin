@@ -17,6 +17,8 @@ export declare class AlignGuidelines {
     aligningLineMargin: number;
     aligningLineWidth: number;
     aligningLineColor: string;
+    verticalOffset: number;
+    horizontalOffset: number;
     ignoreObjTypes: IgnoreObjTypes;
     pickObjTypes: IgnoreObjTypes;
     canvas: fabric.Canvas;
@@ -33,10 +35,13 @@ export declare class AlignGuidelines {
             lineMargin?: number;
             lineWidth?: number;
             lineColor?: string;
+            verticalOffset?: number;
+            horizontalOffset?: number;
         };
     });
     private drawSign;
     private drawLine;
+    private centerObjectInCanvas;
     private drawVerticalLine;
     private drawHorizontalLine;
     private isInRange;
