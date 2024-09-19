@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { Keys, omit } from "./util";
 type VerticalLineCoords = {
   x: number;
