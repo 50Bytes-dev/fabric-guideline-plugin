@@ -77,7 +77,6 @@ function setupObjects() {
   const boxObjects = fabricCanvas.getObjects().filter((obj: CustomFabricObject) => obj.myType === "box");
 
   if (boxObjects.length > 0) {
-    // Центрируем все объекты вручную
     const boundingRect = getBoundingRect(boxObjects);
     const canvasWidth = fabricCanvas.getWidth();
     const canvasHeight = fabricCanvas.getHeight();
@@ -152,11 +151,9 @@ fabricCanvas.on("mouse:wheel", (opt) => {
   let zoom = fabricCanvas.getZoom();
   zoom = zoom - delta / 10;
 
-  // Ограничьте масштабирование
   if (zoom > 4) zoom = 4;
   if (zoom < 0.2) zoom = 0.2;
 
-  // Примените масштабирование
   fabricCanvas.zoomToPoint(new fabric.Point(pointer.x, pointer.y), zoom);
 
   opt.e.preventDefault();
@@ -172,7 +169,20 @@ fabricCanvas.on("mouse:wheel", (opt) => {
  * Need to fix it by replacing callbacks with pub/sub kind of subscription model.
  * (or maybe use existing fabric.util.fire/observe (if it won't be too slow))
  */
-function initCenteringGuidelines(canvas: fabric.Canvas) {
+
+type CenteringGuidelines = {
+  canvas: fabric.Canvas;
+  horizontalOffset?: number;
+  verticalOffset?: number;
+  color?: string;
+};
+
+function initCenteringGuidelines({
+  canvas,
+  horizontalOffset = 4,
+  verticalOffset = 4,
+  color = "purple",
+}: CenteringGuidelines) {
   let canvasWidth = canvas.getWidth(),
     canvasHeight = canvas.getHeight(),
     canvasWidthCenter = canvasWidth / 2,
@@ -180,15 +190,15 @@ function initCenteringGuidelines(canvas: fabric.Canvas) {
     canvasWidthCenterMap: any = {},
     canvasHeightCenterMap: any = {},
     centerLineMargin = 4,
-    centerLineColor = "purple",
+    centerLineColor = color,
     centerLineWidth = 1,
     ctx = canvas.getSelectionContext(),
     viewportTransform: number[] = [1, 0, 0, 1, 0, 0];
 
-  for (let i = canvasWidthCenter - centerLineMargin, len = canvasWidthCenter + centerLineMargin; i <= len; i++) {
+  for (let i = canvasWidthCenter - horizontalOffset, len = canvasWidthCenter + horizontalOffset; i <= len; i++) {
     canvasWidthCenterMap[Math.round(i)] = true;
   }
-  for (let i = canvasHeightCenter - centerLineMargin, len = canvasHeightCenter + centerLineMargin; i <= len; i++) {
+  for (let i = canvasHeightCenter - verticalOffset, len = canvasHeightCenter + verticalOffset; i <= len; i++) {
     canvasHeightCenterMap[Math.round(i)] = true;
   }
 
@@ -261,6 +271,13 @@ function initCenteringGuidelines(canvas: fabric.Canvas) {
     canvas.clearContext(canvas.contextTop);
   });
 
+  canvas.on("object:modified", function () {
+    isInVerticalCenter = null;
+    isInHorizontalCenter = null;
+    canvas.clearContext(canvas.contextTop);
+    canvas.renderAll();
+  });
+
   canvas.on("after:render", () => {
     if (isInVerticalCenter) {
       showVerticalCenterLine();
@@ -275,7 +292,6 @@ function initCenteringGuidelines(canvas: fabric.Canvas) {
   });
 
   canvas.on("mouse:up", function () {
-    // clear these values, to stop drawing guidelines once mouse is up
     canvas.renderAll();
   });
 }
@@ -284,8 +300,16 @@ const guideline = new AlignGuidelines({
   canvas: fabricCanvas,
   pickObjTypes: [{ key: "myType", value: "box" }],
   aligningOptions: {
-    lineColor: "#ff8181",
+    lineColor: "red",
     lineWidth: 0.5,
+    horizontalOffset: 40,
+    verticalOffset: 40,
   },
+  // centerOptions: {
+  //   horizontalOffset: 10,
+  //   verticalOffset: 10
+  // }
 });
 guideline.init();
+
+export { initCenteringGuidelines };

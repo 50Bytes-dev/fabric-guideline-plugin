@@ -1,5 +1,6 @@
 import * as fabric from "fabric";
 import { Keys, omit } from "./util";
+import { initCenteringGuidelines } from "./index";
 type VerticalLineCoords = {
   x: number;
   y1: number;
@@ -22,6 +23,8 @@ export class AlignGuidelines {
   aligningLineMargin = 4;
   aligningLineWidth = 0.75;
   aligningLineColor = "#F68066";
+  verticalOffset = 5;
+  horizontalOffset = 5;
   ignoreObjTypes: IgnoreObjTypes = [];
   pickObjTypes: IgnoreObjTypes = [];
 
@@ -45,6 +48,8 @@ export class AlignGuidelines {
       lineMargin?: number;
       lineWidth?: number;
       lineColor?: string;
+      verticalOffset?: number;
+      horizontalOffset?: number;
     };
   }) {
     this.canvas = canvas;
@@ -56,6 +61,8 @@ export class AlignGuidelines {
       this.aligningLineMargin = aligningOptions.lineMargin || this.aligningLineMargin;
       this.aligningLineWidth = aligningOptions.lineWidth || this.aligningLineWidth;
       this.aligningLineColor = aligningOptions.lineColor || this.aligningLineColor;
+      this.verticalOffset = aligningOptions.verticalOffset || this.verticalOffset;
+      this.horizontalOffset = aligningOptions.horizontalOffset || this.horizontalOffset;
     }
   }
 
@@ -97,6 +104,28 @@ export class AlignGuidelines {
     // ctx.lineWidth = aligningLineWidth
     // ctx.strokeStyle = aligningLineColor
     ctx.restore();
+  }
+
+  private centerObjectInCanvas() {
+    const canvasCenter = {
+      x: this.canvas.getWidth() / 2,
+      y: this.canvas.getHeight() / 2,
+    };
+
+    const activeObject = this.activeObj;
+
+    // Получаем размеры объекта
+    const objectWidth = activeObject.getScaledWidth();
+    const objectHeight = activeObject.getScaledHeight();
+
+    // Устанавливаем позицию объекта в центр канвы
+    activeObject.set({
+      left: canvasCenter.x - objectWidth / 2,
+      top: canvasCenter.y - objectHeight / 2,
+    });
+
+    activeObject.setCoords(); // обновляем координаты
+    this.canvas.renderAll(); // перерисовываем канву
   }
 
   private drawVerticalLine(coords: VerticalLineCoords) {
@@ -387,10 +416,17 @@ export class AlignGuidelines {
   }
 
   init() {
+    initCenteringGuidelines({
+      canvas: this.canvas,
+      horizontalOffset: this.horizontalOffset,
+      verticalOffset: this.verticalOffset,
+      color: this.aligningLineColor,
+    });
     this.watchObjectMoving();
     this.watchRender();
     this.watchMouseDown();
     this.watchMouseUp();
     this.watchMouseWheel();
+    this.centerObjectInCanvas();
   }
 }
