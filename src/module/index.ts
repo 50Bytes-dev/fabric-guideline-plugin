@@ -280,13 +280,6 @@ function initCenteringGuidelines(canvas: fabric.Canvas) {
   });
 }
 
-// ===============================================
-// OBJECT SNAPPING & ALIGNMENT GUIDELINES
-// ===============================================
-
-// ORIGINAL:
-// https://github.com/fabricjs/fabric.js/blob/master/lib/aligning_guidelines.js
-
 const guideline = new AlignGuidelines({
   canvas: fabricCanvas,
   pickObjTypes: [{ key: "myType", value: "box" }],
