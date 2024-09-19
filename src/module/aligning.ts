@@ -1,6 +1,5 @@
 import { fabric } from "fabric";
 import { Keys, omit } from "./util";
-
 type VerticalLineCoords = {
   x: number;
   y1: number;

@@ -1,13 +1,5 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { AlignGuidelines } from "./aligning";
-/**
- * 问题点：
- * 1、自动吸附只有相同的 margin 才会触发，例如顶部只会和顶部自动吸附，左边只会和左边自动吸附
- * 2、自动吸附只会计算 value1(被拖拽的元素) < value2 的情况（已解决）
- */
-// ==========================================
-// SETUP
-// ==========================================
 
 const fabricCanvas = new fabric.Canvas("myCanvas", {
   backgroundColor: "#F5F5F5",
@@ -23,9 +15,9 @@ global.alignmentLines_vertical = "";
 setupObjects();
 
 function generateLightColorRgb() {
-  const red = Math.floor((1 + Math.random()) * 256/2);
-  const green = Math.floor((1 + Math.random()) * 256/2);
-  const blue = Math.floor((1 + Math.random()) * 256/2);
+  const red = Math.floor(((1 + Math.random()) * 256) / 2);
+  const green = Math.floor(((1 + Math.random()) * 256) / 2);
+  const blue = Math.floor(((1 + Math.random()) * 256) / 2);
   return "rgb(" + red + ", " + green + ", " + blue + ")";
 }
 
@@ -45,7 +37,9 @@ function setupObjects() {
   global.outer.center();
 
   const genRect = (
-    {angle}: {
+    {
+      angle,
+    }: {
       angle?: number;
     } = { angle: 0 }
   ) => {
