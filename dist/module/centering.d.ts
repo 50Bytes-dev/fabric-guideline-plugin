@@ -24,6 +24,6 @@ export declare class CenteringGuidelines {
     private showCenterLine;
     private showHorizontalCenterLine;
     private showVerticalCenterLine;
-    private calculateCanvasCenter;
+    calculateCanvasCenter(): void;
     init(): void;
 }
