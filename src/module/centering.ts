@@ -6,8 +6,6 @@ export class CenteringGuidelines {
     private verticalOffset: number;
     private color: string;
 
-    private canvasWidthCenterMap: any = {};
-    private canvasHeightCenterMap: any = {};
     private centerLineWidth = 1;
 
     private ctx: CanvasRenderingContext2D;
@@ -88,20 +86,8 @@ export class CenteringGuidelines {
         );
     }
 
-    calculateCanvasCenter() {
-        this.canvasWidthCenterMap = {};
-        for (let i = this.canvasWidthCenter - this.horizontalOffset, len = this.canvasWidthCenter + this.horizontalOffset; i <= len; i++) {
-            this.canvasWidthCenterMap[Math.round(i)] = true;
-        }
-        this.canvasHeightCenterMap = {};
-        for (let i = this.canvasHeightCenter - this.verticalOffset, len = this.canvasHeightCenter + this.verticalOffset; i <= len; i++) {
-            this.canvasHeightCenterMap[Math.round(i)] = true;
-        }
-    }
-
     init() {
         this.canvas.on("mouse:down", () => {
-            this.calculateCanvasCenter();
             this.isInVerticalCenter = null;
             this.isInHorizontalCenter = null;
         });
@@ -113,8 +99,8 @@ export class CenteringGuidelines {
 
             if (!transform) return;
 
-            this.isInVerticalCenter = Math.round(objectCenter.x) in this.canvasWidthCenterMap;
-            this.isInHorizontalCenter = Math.round(objectCenter.y) in this.canvasHeightCenterMap;
+            this.isInVerticalCenter = Math.abs(objectCenter.x - this.canvasWidthCenter) < this.horizontalOffset;
+            this.isInHorizontalCenter = Math.abs(objectCenter.y - this.canvasHeightCenter) < this.verticalOffset;
 
             if (this.isInHorizontalCenter || this.isInVerticalCenter) {
                 object.setPositionByOrigin(

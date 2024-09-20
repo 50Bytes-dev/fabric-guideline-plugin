@@ -1,6 +1,6 @@
 import * as f from "fabric";
-const x = (d) => Object.keys(d);
-class L {
+const x = (m) => Object.keys(m);
+class M {
   aligningLineMargin = 4;
   aligningLineWidth = 0.75;
   aligningLineColor = "#F68066";
@@ -137,51 +137,51 @@ class L {
       const r = {
         ...e[i].aCoords,
         c: e[i].getCenterPoint()
-      }, { objHeight: v, objWidth: y } = this.getObjMaxWidthHeightByCoords(r);
+      }, { objHeight: v, objWidth: C } = this.getObjMaxWidthHeightByCoords(r);
       x(n).forEach((c) => {
-        const C = e[i].angle !== 0 ? this.omitCoords(r, "horizontal") : r;
-        function u(h, o) {
+        const u = e[i].angle !== 0 ? this.omitCoords(r, "horizontal") : r;
+        function y(h, o) {
           let l, g;
-          return h === "c" ? (l = Math.min(r.c.x - y / 2, o[c].x), g = Math.max(r.c.x + y / 2, o[c].x)) : (l = Math.min(r[h].x, o[c].x), g = Math.max(r[h].x, o[c].x)), { x1: l, x2: g };
+          return h === "c" ? (l = Math.min(r.c.x - C / 2, o[c].x), g = Math.max(r.c.x + C / 2, o[c].x)) : (l = Math.min(r[h].x, o[c].x), g = Math.max(r[h].x, o[c].x)), { x1: l, x2: g };
         }
-        x(C).forEach((h) => {
+        x(u).forEach((h) => {
           if (this.isInRange(n[c].y, r[h].y)) {
             const o = r[h].y;
-            let { x1: l, x2: g } = u(h, n);
-            const M = n[c].y - o;
-            if (a.push(n.c.y - M), t.aCoords) {
-              let { x1: m, x2: w } = u(
+            let { x1: l, x2: g } = y(h, n);
+            const w = n[c].y - o;
+            if (a.push(n.c.y - w), t.aCoords) {
+              let { x1: L, x2: d } = y(
                 h,
                 {
                   ...t.aCoords,
                   c: this.calcCenterPointByACoords(t.aCoords)
                 }
               );
-              this.horizontalLines.push({ y: o, x1: m, x2: w });
+              this.horizontalLines.push({ y: o, x1: L, x2: d });
             } else
               this.horizontalLines.push({ y: o, x1: l, x2: g });
           }
         });
       }), x(n).forEach((c) => {
-        const C = e[i].angle !== 0 ? this.omitCoords(r, "vertical") : r;
-        function u(h, o) {
+        const u = e[i].angle !== 0 ? this.omitCoords(r, "vertical") : r;
+        function y(h, o) {
           let l, g;
-          return h === "c" ? (l = Math.min(C.c.y - v / 2, o[c].y), g = Math.max(C.c.y + v / 2, o[c].y)) : (l = Math.min(r[h].y, o[c].y), g = Math.max(r[h].y, o[c].y)), { y1: l, y2: g };
+          return h === "c" ? (l = Math.min(u.c.y - v / 2, o[c].y), g = Math.max(u.c.y + v / 2, o[c].y)) : (l = Math.min(r[h].y, o[c].y), g = Math.max(r[h].y, o[c].y)), { y1: l, y2: g };
         }
-        x(C).forEach((h) => {
+        x(u).forEach((h) => {
           if (this.isInRange(n[c].x, r[h].x)) {
             const o = r[h].x;
-            let { y1: l, y2: g } = u(h, n);
-            const M = n[c].x - o;
-            if (s.push(n.c.x - M), t.aCoords) {
-              let { y1: m, y2: w } = u(
+            let { y1: l, y2: g } = y(h, n);
+            const w = n[c].x - o;
+            if (s.push(n.c.x - w), t.aCoords) {
+              let { y1: L, y2: d } = y(
                 h,
                 {
                   ...t.aCoords,
                   c: this.calcCenterPointByACoords(t.aCoords)
                 }
               );
-              this.verticalLines.push({ x: o, y1: m, y2: w });
+              this.verticalLines.push({ x: o, y1: L, y2: d });
             } else
               this.verticalLines.push({ x: o, y1: l, y2: g });
           }
@@ -203,7 +203,7 @@ class L {
     const a = (i, r) => i.length ? i.map((v) => ({
       abs: Math.abs(r - v),
       val: v
-    })).sort((v, y) => v.abs - y.abs)[0].val : r;
+    })).sort((v, C) => v.abs - C.abs)[0].val : r;
     t.setPositionByOrigin(
       // auto snap nearest object, record all the snap points, and then find the nearest one
       new f.Point(a(e, n.c.x), a(s, n.c.y)),
@@ -234,8 +234,6 @@ class p {
   horizontalOffset;
   verticalOffset;
   color;
-  canvasWidthCenterMap = {};
-  canvasHeightCenterMap = {};
   centerLineWidth = 1;
   ctx;
   isInVerticalCenter = null;
@@ -283,20 +281,12 @@ class p {
       this.canvasHeight
     );
   }
-  calculateCanvasCenter() {
-    this.canvasWidthCenterMap = {};
-    for (let t = this.canvasWidthCenter - this.horizontalOffset, e = this.canvasWidthCenter + this.horizontalOffset; t <= e; t++)
-      this.canvasWidthCenterMap[Math.round(t)] = !0;
-    this.canvasHeightCenterMap = {};
-    for (let t = this.canvasHeightCenter - this.verticalOffset, e = this.canvasHeightCenter + this.verticalOffset; t <= e; t++)
-      this.canvasHeightCenterMap[Math.round(t)] = !0;
-  }
   init() {
     this.canvas.on("mouse:down", () => {
-      this.calculateCanvasCenter(), this.isInVerticalCenter = null, this.isInHorizontalCenter = null;
+      this.isInVerticalCenter = null, this.isInHorizontalCenter = null;
     }), this.canvas.on("object:moving", (t) => {
       const e = t.target, n = e.getCenterPoint();
-      this.canvas._currentTransform && (this.isInVerticalCenter = Math.round(n.x) in this.canvasWidthCenterMap, this.isInHorizontalCenter = Math.round(n.y) in this.canvasHeightCenterMap, (this.isInHorizontalCenter || this.isInVerticalCenter) && e.setPositionByOrigin(
+      this.canvas._currentTransform && (this.isInVerticalCenter = Math.abs(n.x - this.canvasWidthCenter) < this.horizontalOffset, this.isInHorizontalCenter = Math.abs(n.y - this.canvasHeightCenter) < this.verticalOffset, (this.isInHorizontalCenter || this.isInVerticalCenter) && e.setPositionByOrigin(
         new f.Point(
           this.isInVerticalCenter ? this.canvasWidthCenter : n.x,
           this.isInHorizontalCenter ? this.canvasHeightCenter : n.y
@@ -316,6 +306,6 @@ class p {
   }
 }
 export {
-  L as AlignGuidelines,
+  M as AlignGuidelines,
   p as CenteringGuidelines
 };

@@ -4,8 +4,6 @@ export declare class CenteringGuidelines {
     private horizontalOffset;
     private verticalOffset;
     private color;
-    private canvasWidthCenterMap;
-    private canvasHeightCenterMap;
     private centerLineWidth;
     private ctx;
     private isInVerticalCenter;
@@ -24,6 +22,5 @@ export declare class CenteringGuidelines {
     private showCenterLine;
     private showHorizontalCenterLine;
     private showVerticalCenterLine;
-    calculateCanvasCenter(): void;
     init(): void;
 }
