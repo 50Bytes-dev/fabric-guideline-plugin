@@ -1,5 +1,5 @@
 import * as f from "fabric";
-const x = (M) => Object.keys(M);
+const x = (d) => Object.keys(d);
 class L {
   aligningLineMargin = 4;
   aligningLineWidth = 0.75;
@@ -148,8 +148,8 @@ class L {
           if (this.isInRange(n[c].y, r[h].y)) {
             const o = r[h].y;
             let { x1: l, x2: g } = u(h, n);
-            const d = n[c].y - o;
-            if (a.push(n.c.y - d), t.aCoords) {
+            const M = n[c].y - o;
+            if (a.push(n.c.y - M), t.aCoords) {
               let { x1: m, x2: w } = u(
                 h,
                 {
@@ -172,8 +172,8 @@ class L {
           if (this.isInRange(n[c].x, r[h].x)) {
             const o = r[h].x;
             let { y1: l, y2: g } = u(h, n);
-            const d = n[c].x - o;
-            if (s.push(n.c.x - d), t.aCoords) {
+            const M = n[c].x - o;
+            if (s.push(n.c.x - M), t.aCoords) {
               let { y1: m, y2: w } = u(
                 h,
                 {
@@ -283,9 +283,6 @@ class p {
       this.canvasHeight
     );
   }
-  onMouseDown() {
-    this.isInVerticalCenter = null, this.isInHorizontalCenter = null;
-  }
   calculateCanvasCenter() {
     this.canvasWidthCenterMap = {};
     for (let t = this.canvasWidthCenter - this.horizontalOffset, e = this.canvasWidthCenter + this.horizontalOffset; t <= e; t++)
@@ -295,7 +292,9 @@ class p {
       this.canvasHeightCenterMap[Math.round(t)] = !0;
   }
   init() {
-    this.calculateCanvasCenter(), this.canvas.on("mouse:down", this.onMouseDown.bind(this)), this.canvas.on("object:moving", (t) => {
+    this.calculateCanvasCenter(), this.canvas.on("mouse:down", () => {
+      this.isInVerticalCenter = null, this.isInHorizontalCenter = null;
+    }), this.canvas.on("object:moving", (t) => {
       const e = t.target, n = e.getCenterPoint();
       this.canvas._currentTransform && (this.isInVerticalCenter = Math.round(n.x) in this.canvasWidthCenterMap, this.isInHorizontalCenter = Math.round(n.y) in this.canvasHeightCenterMap, (this.isInHorizontalCenter || this.isInVerticalCenter) && e.setPositionByOrigin(
         new f.Point(
