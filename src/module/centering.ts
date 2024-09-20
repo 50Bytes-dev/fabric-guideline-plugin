@@ -88,14 +88,6 @@ export class CenteringGuidelines {
         );
     }
 
-    private onMouseDown() {
-        this.isInVerticalCenter = null;
-        this.isInHorizontalCenter = null;
-        // this.#centerLine_horizontal = "";
-        // this.#centerLine_vertical = "";
-        // this.#viewportTransform = this.#canvas.viewportTransform as fabric.TMat2D;
-    }
-
     calculateCanvasCenter() {
         this.canvasWidthCenterMap = {};
         for (let i = this.canvasWidthCenter - this.horizontalOffset, len = this.canvasWidthCenter + this.horizontalOffset; i <= len; i++) {
@@ -110,7 +102,10 @@ export class CenteringGuidelines {
     init() {
         this.calculateCanvasCenter();
 
-        this.canvas.on("mouse:down", this.onMouseDown.bind(this));
+        this.canvas.on("mouse:down", () => {
+            this.isInVerticalCenter = null;
+            this.isInHorizontalCenter = null;
+        });
 
         this.canvas.on("object:moving", (e) => {
             const object = e.target;
@@ -148,9 +143,6 @@ export class CenteringGuidelines {
         this.canvas.on("after:render", () => {
             if (this.isInVerticalCenter) {
                 this.showVerticalCenterLine();
-                // this.#centerLine_horizontal = "";
-                // this.#centerLine_vertical =
-                //     this.#canvasWidthCenter + 0.5 + ", " + 0 + ", " + (this.#canvasWidthCenter + 0.5) + ", " + this.#canvasHeight;
             }
 
             if (this.isInHorizontalCenter) {
