@@ -97,9 +97,11 @@ export class CenteringGuidelines {
     }
 
     calculateCanvasCenter() {
+        this.canvasWidthCenterMap = {};
         for (let i = this.canvasWidthCenter - this.horizontalOffset, len = this.canvasWidthCenter + this.horizontalOffset; i <= len; i++) {
             this.canvasWidthCenterMap[Math.round(i)] = true;
         }
+        this.canvasHeightCenterMap = {};
         for (let i = this.canvasHeightCenter - this.verticalOffset, len = this.canvasHeightCenter + this.verticalOffset; i <= len; i++) {
             this.canvasHeightCenterMap[Math.round(i)] = true;
         }
