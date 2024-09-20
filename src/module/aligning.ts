@@ -1,6 +1,6 @@
 import * as fabric from "fabric";
 import { Keys, omit } from "./util";
-import { initCenteringGuidelines } from "./index";
+
 type VerticalLineCoords = {
   x: number;
   y1: number;
@@ -272,7 +272,7 @@ export class AlignGuidelines {
     const snapXPoints: number[] = [];
     const snapYPoints: number[] = [];
 
-    for (let i = canvasObjects.length; i--; ) {
+    for (let i = canvasObjects.length; i--;) {
       if (canvasObjects[i] === activeObject) continue;
       const objCoords = {
         ...canvasObjects[i].aCoords,
@@ -405,10 +405,10 @@ export class AlignGuidelines {
     });
 
     this.canvas.on("after:render", () => {
-      for (let i = this.verticalLines.length; i--; ) {
+      for (let i = this.verticalLines.length; i--;) {
         this.drawVerticalLine(this.verticalLines[i]);
       }
-      for (let i = this.horizontalLines.length; i--; ) {
+      for (let i = this.horizontalLines.length; i--;) {
         this.drawHorizontalLine(this.horizontalLines[i]);
       }
       this.canvas.calcOffset();
@@ -422,11 +422,5 @@ export class AlignGuidelines {
     this.watchMouseUp();
     this.watchMouseWheel();
     this.centerObjectInCanvas();
-    initCenteringGuidelines({
-      canvas: this.canvas,
-      horizontalOffset: this.horizontalOffset,
-      verticalOffset: this.verticalOffset,
-      color: this.aligningLineColor,
-    });
   }
 }
