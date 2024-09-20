@@ -1,57 +1,6 @@
-import * as y from "fabric";
-const d = (a) => Object.keys(a);
-function H({
-  canvas: a,
-  horizontalOffset: t = 4,
-  verticalOffset: e = 4,
-  color: n = "purple"
-}) {
-  if (!a) return;
-  let s = a.getWidth(), o = a.getHeight(), i = s / 2, r = o / 2, M = {}, C = {}, g = n, L = 1, x = a.getSelectionContext();
-  for (let f = i - t, m = i + t; f <= m; f++)
-    M[Math.round(f)] = !0;
-  for (let f = r - e, m = r + e; f <= m; f++)
-    C[Math.round(f)] = !0;
-  function h() {
-    u(
-      // canvasWidthCenter + 0.5,
-      i,
-      0,
-      i,
-      o
-    );
-  }
-  function l() {
-    u(0, r, s, r);
-  }
-  function u(f, m, p, T) {
-    const v = a.viewportTransform, W = y.util.transformPoint(new y.Point(f, m), v), z = y.util.transformPoint(new y.Point(p, T), v);
-    x.save(), x.strokeStyle = g, x.lineWidth = L, x.beginPath(), x.moveTo(W.x, W.y), x.lineTo(z.x, z.y), x.stroke(), x.restore();
-  }
-  let c = null, w = null;
-  a.on("mouse:down", () => {
-    c = null, w = null, a.viewportTransform;
-  }), a.on("object:moving", function(f) {
-    let m = f.target, p = m.getCenterPoint();
-    a._currentTransform && (c = Math.round(p.x) in M, w = Math.round(p.y) in C, (w || c) && m.setPositionByOrigin(
-      new y.Point(
-        c ? i : p.x,
-        w ? r : p.y
-      ),
-      "center",
-      "center"
-    ));
-  }), a.on("before:render", function() {
-    a.clearContext(a.contextTop);
-  }), a.on("object:modified", function() {
-    c = null, w = null, a.clearContext(a.contextTop), a.renderAll();
-  }), a.on("after:render", () => {
-    c && h(), w && l();
-  }), a.on("mouse:up", function() {
-    a.renderAll();
-  });
-}
-class b {
+import * as f from "fabric";
+const x = (d) => Object.keys(d);
+class L {
   aligningLineMargin = 4;
   aligningLineWidth = 0.75;
   aligningLineColor = "#F68066";
@@ -64,7 +13,7 @@ class b {
   viewportTransform;
   verticalLines = [];
   horizontalLines = [];
-  activeObj = new y.Object();
+  activeObj = new f.Object();
   constructor({
     canvas: t,
     aligningOptions: e,
@@ -80,8 +29,8 @@ class b {
     n.moveTo(t - s, e - s), n.lineTo(t + s, e + s), n.moveTo(t + s, e - s), n.lineTo(t - s, e + s), n.stroke();
   }
   drawLine(t, e, n, s) {
-    const o = this.ctx, i = y.util.transformPoint(new y.Point(t, e), this.canvas.viewportTransform), r = y.util.transformPoint(new y.Point(n, s), this.canvas.viewportTransform);
-    o.save(), o.lineWidth = this.aligningLineWidth, o.strokeStyle = this.aligningLineColor, o.beginPath(), o.moveTo(i.x, i.y), o.lineTo(r.x, r.y), o.stroke(), this.drawSign(i.x, i.y), this.drawSign(r.x, r.y), o.restore();
+    const a = this.ctx, i = f.util.transformPoint(new f.Point(t, e), this.canvas.viewportTransform), r = f.util.transformPoint(new f.Point(n, s), this.canvas.viewportTransform);
+    a.save(), a.lineWidth = this.aligningLineWidth, a.strokeStyle = this.aligningLineColor, a.beginPath(), a.moveTo(i.x, i.y), a.lineTo(r.x, r.y), a.stroke(), this.drawSign(i.x, i.y), this.drawSign(r.x, r.y), a.restore();
   }
   centerObjectInCanvas() {
     const t = {
@@ -95,11 +44,11 @@ class b {
   }
   drawVerticalLine(t) {
     const e = this.getObjDraggingObjCoords(this.activeObj);
-    d(e).some((n) => Math.abs(e[n].x - t.x) < 1e-4) && this.drawLine(t.x, Math.min(t.y1, t.y2), t.x, Math.max(t.y1, t.y2));
+    x(e).some((n) => Math.abs(e[n].x - t.x) < 1e-4) && this.drawLine(t.x, Math.min(t.y1, t.y2), t.x, Math.max(t.y1, t.y2));
   }
   drawHorizontalLine(t) {
     const e = this.getObjDraggingObjCoords(this.activeObj);
-    d(e).some((n) => Math.abs(e[n].y - t.y) < 1e-4) && this.drawLine(Math.min(t.x1, t.x2), t.y, Math.max(t.x1, t.x2), t.y);
+    x(e).some((n) => Math.abs(e[n].y - t.y) < 1e-4) && this.drawLine(Math.min(t.x1, t.x2), t.y, Math.max(t.x1, t.x2), t.y);
   }
   isInRange(t, e) {
     return Math.abs(Math.round(t) - Math.round(e)) <= this.aligningLineMargin / this.canvas.getZoom();
@@ -127,18 +76,18 @@ class b {
       this.clearLinesMeta();
       const e = t.target;
       this.activeObj = e;
-      const n = this.canvas.getObjects().filter((o) => this.ignoreObjTypes.length ? !this.ignoreObjTypes.some((i) => o[i.key] === i.value) : this.pickObjTypes.length ? this.pickObjTypes.some((i) => o[i.key] === i.value) : !0);
+      const n = this.canvas.getObjects().filter((a) => this.ignoreObjTypes.length ? !this.ignoreObjTypes.some((i) => a[i.key] === i.value) : this.pickObjTypes.length ? this.pickObjTypes.some((i) => a[i.key] === i.value) : !0);
       this.canvas._currentTransform && this.traversAllObjects(e, n);
     });
   }
   getObjDraggingObjCoords(t) {
-    const e = t.aCoords, n = new y.Point((e.tl.x + e.br.x) / 2, (e.tl.y + e.br.y) / 2), s = n.x - t.getCenterPoint().x, o = n.y - t.getCenterPoint().y;
-    return d(e).reduce(
+    const e = t.aCoords, n = new f.Point((e.tl.x + e.br.x) / 2, (e.tl.y + e.br.y) / 2), s = n.x - t.getCenterPoint().x, a = n.y - t.getCenterPoint().y;
+    return x(e).reduce(
       (i, r) => ({
         ...i,
         [r]: {
           x: e[r].x - s,
-          y: e[r].y - o
+          y: e[r].y - a
         }
       }),
       {
@@ -150,21 +99,21 @@ class b {
   omitCoords(t, e) {
     let n;
     if (e === "vertical") {
-      let s = ["tl", t.tl], o = ["tl", t.tl];
-      d(t).forEach((i) => {
-        t[i].x < s[1].x && (s = [i, t[i]]), t[i].x > o[1].x && (o = [i, t[i]]);
+      let s = ["tl", t.tl], a = ["tl", t.tl];
+      x(t).forEach((i) => {
+        t[i].x < s[1].x && (s = [i, t[i]]), t[i].x > a[1].x && (a = [i, t[i]]);
       }), n = {
         [s[0]]: s[1],
-        [o[0]]: o[1],
+        [a[0]]: a[1],
         c: t.c
       };
     } else {
-      let s = ["tl", t.tl], o = ["tl", t.tl];
-      d(t).forEach((i) => {
-        t[i].y < s[1].y && (s = [i, t[i]]), t[i].y > o[1].y && (o = [i, t[i]]);
+      let s = ["tl", t.tl], a = ["tl", t.tl];
+      x(t).forEach((i) => {
+        t[i].y < s[1].y && (s = [i, t[i]]), t[i].y > a[1].y && (a = [i, t[i]]);
       }), n = {
         [s[0]]: s[1],
-        [o[0]]: o[1],
+        [a[0]]: a[1],
         c: t.c
       };
     }
@@ -179,69 +128,69 @@ class b {
    * calcCenterPointByACoords will return real center point of the object position.
    */
   calcCenterPointByACoords(t) {
-    return new y.Point((t.tl.x + t.br.x) / 2, (t.tl.y + t.br.y) / 2);
+    return new f.Point((t.tl.x + t.br.x) / 2, (t.tl.y + t.br.y) / 2);
   }
   traversAllObjects(t, e) {
-    const n = this.getObjDraggingObjCoords(t), s = [], o = [];
+    const n = this.getObjDraggingObjCoords(t), s = [], a = [];
     for (let i = e.length; i--; ) {
       if (e[i] === t) continue;
       const r = {
         ...e[i].aCoords,
         c: e[i].getCenterPoint()
-      }, { objHeight: M, objWidth: C } = this.getObjMaxWidthHeightByCoords(r);
-      d(n).forEach((g) => {
-        const L = e[i].angle !== 0 ? this.omitCoords(r, "horizontal") : r;
-        function x(h, l) {
-          let u, c;
-          return h === "c" ? (u = Math.min(r.c.x - C / 2, l[g].x), c = Math.max(r.c.x + C / 2, l[g].x)) : (u = Math.min(r[h].x, l[g].x), c = Math.max(r[h].x, l[g].x)), { x1: u, x2: c };
+      }, { objHeight: v, objWidth: y } = this.getObjMaxWidthHeightByCoords(r);
+      x(n).forEach((c) => {
+        const C = e[i].angle !== 0 ? this.omitCoords(r, "horizontal") : r;
+        function u(h, o) {
+          let l, g;
+          return h === "c" ? (l = Math.min(r.c.x - y / 2, o[c].x), g = Math.max(r.c.x + y / 2, o[c].x)) : (l = Math.min(r[h].x, o[c].x), g = Math.max(r[h].x, o[c].x)), { x1: l, x2: g };
         }
-        d(L).forEach((h) => {
-          if (this.isInRange(n[g].y, r[h].y)) {
-            const l = r[h].y;
-            let { x1: u, x2: c } = x(h, n);
-            const w = n[g].y - l;
-            if (o.push(n.c.y - w), t.aCoords) {
-              let { x1: f, x2: m } = x(
+        x(C).forEach((h) => {
+          if (this.isInRange(n[c].y, r[h].y)) {
+            const o = r[h].y;
+            let { x1: l, x2: g } = u(h, n);
+            const M = n[c].y - o;
+            if (a.push(n.c.y - M), t.aCoords) {
+              let { x1: m, x2: w } = u(
                 h,
                 {
                   ...t.aCoords,
                   c: this.calcCenterPointByACoords(t.aCoords)
                 }
               );
-              this.horizontalLines.push({ y: l, x1: f, x2: m });
+              this.horizontalLines.push({ y: o, x1: m, x2: w });
             } else
-              this.horizontalLines.push({ y: l, x1: u, x2: c });
+              this.horizontalLines.push({ y: o, x1: l, x2: g });
           }
         });
-      }), d(n).forEach((g) => {
-        const L = e[i].angle !== 0 ? this.omitCoords(r, "vertical") : r;
-        function x(h, l) {
-          let u, c;
-          return h === "c" ? (u = Math.min(L.c.y - M / 2, l[g].y), c = Math.max(L.c.y + M / 2, l[g].y)) : (u = Math.min(r[h].y, l[g].y), c = Math.max(r[h].y, l[g].y)), { y1: u, y2: c };
+      }), x(n).forEach((c) => {
+        const C = e[i].angle !== 0 ? this.omitCoords(r, "vertical") : r;
+        function u(h, o) {
+          let l, g;
+          return h === "c" ? (l = Math.min(C.c.y - v / 2, o[c].y), g = Math.max(C.c.y + v / 2, o[c].y)) : (l = Math.min(r[h].y, o[c].y), g = Math.max(r[h].y, o[c].y)), { y1: l, y2: g };
         }
-        d(L).forEach((h) => {
-          if (this.isInRange(n[g].x, r[h].x)) {
-            const l = r[h].x;
-            let { y1: u, y2: c } = x(h, n);
-            const w = n[g].x - l;
-            if (s.push(n.c.x - w), t.aCoords) {
-              let { y1: f, y2: m } = x(
+        x(C).forEach((h) => {
+          if (this.isInRange(n[c].x, r[h].x)) {
+            const o = r[h].x;
+            let { y1: l, y2: g } = u(h, n);
+            const M = n[c].x - o;
+            if (s.push(n.c.x - M), t.aCoords) {
+              let { y1: m, y2: w } = u(
                 h,
                 {
                   ...t.aCoords,
                   c: this.calcCenterPointByACoords(t.aCoords)
                 }
               );
-              this.verticalLines.push({ x: l, y1: f, y2: m });
+              this.verticalLines.push({ x: o, y1: m, y2: w });
             } else
-              this.verticalLines.push({ x: l, y1: u, y2: c });
+              this.verticalLines.push({ x: o, y1: l, y2: g });
           }
         });
       }), this.snap({
         activeObject: t,
         draggingObjCoords: n,
         snapXPoints: s,
-        snapYPoints: o
+        snapYPoints: a
       });
     }
   }
@@ -251,13 +200,13 @@ class b {
     draggingObjCoords: n,
     snapYPoints: s
   }) {
-    const o = (i, r) => i.length ? i.map((M) => ({
-      abs: Math.abs(r - M),
-      val: M
-    })).sort((M, C) => M.abs - C.abs)[0].val : r;
+    const a = (i, r) => i.length ? i.map((v) => ({
+      abs: Math.abs(r - v),
+      val: v
+    })).sort((v, y) => v.abs - y.abs)[0].val : r;
     t.setPositionByOrigin(
       // auto snap nearest object, record all the snap points, and then find the nearest one
-      new y.Point(o(e, n.c.x), o(s, n.c.y)),
+      new f.Point(a(e, n.c.x), a(s, n.c.y)),
       "center",
       "center"
     );
@@ -277,14 +226,95 @@ class b {
     });
   }
   init() {
-    this.watchObjectMoving(), this.watchRender(), this.watchMouseDown(), this.watchMouseUp(), this.watchMouseWheel(), this.centerObjectInCanvas(), H({
-      canvas: this.canvas,
-      horizontalOffset: this.horizontalOffset,
-      verticalOffset: this.verticalOffset,
-      color: this.aligningLineColor
+    this.watchObjectMoving(), this.watchRender(), this.watchMouseDown(), this.watchMouseUp(), this.watchMouseWheel(), this.centerObjectInCanvas();
+  }
+}
+class p {
+  canvas;
+  horizontalOffset;
+  verticalOffset;
+  color;
+  canvasWidthCenterMap = {};
+  canvasHeightCenterMap = {};
+  centerLineWidth = 1;
+  ctx;
+  isInVerticalCenter = null;
+  isInHorizontalCenter = null;
+  constructor({
+    canvas: t,
+    horizontalOffset: e = 4,
+    verticalOffset: n = 4,
+    color: s = "purple"
+  }) {
+    this.canvas = t, this.ctx = t.getSelectionContext(), this.horizontalOffset = e, this.verticalOffset = n, this.color = s;
+  }
+  get canvasWidth() {
+    return this.canvas.getWidth();
+  }
+  get canvasHeight() {
+    return this.canvas.getHeight();
+  }
+  get canvasWidthCenter() {
+    return this.canvasWidth / 2;
+  }
+  get canvasHeightCenter() {
+    return this.canvasHeight / 2;
+  }
+  get centerLineColor() {
+    return this.color;
+  }
+  showCenterLine(t, e, n, s) {
+    const a = this.canvas.viewportTransform, i = new f.Point(t, e).transform(a), r = new f.Point(n, s).transform(a);
+    this.ctx.save(), this.ctx.strokeStyle = this.centerLineColor, this.ctx.lineWidth = this.centerLineWidth, this.ctx.beginPath(), this.ctx.moveTo(i.x, i.y), this.ctx.lineTo(r.x, r.y), this.ctx.stroke(), this.ctx.restore();
+  }
+  showHorizontalCenterLine() {
+    this.showCenterLine(
+      0,
+      this.canvasHeightCenter,
+      this.canvasWidth,
+      this.canvasHeightCenter
+    );
+  }
+  showVerticalCenterLine() {
+    this.showCenterLine(
+      this.canvasWidthCenter,
+      0,
+      this.canvasWidthCenter,
+      this.canvasHeight
+    );
+  }
+  onMouseDown() {
+    this.isInVerticalCenter = null, this.isInHorizontalCenter = null;
+  }
+  calculateCanvasCenter() {
+    for (let t = this.canvasWidthCenter - this.horizontalOffset, e = this.canvasWidthCenter + this.horizontalOffset; t <= e; t++)
+      this.canvasWidthCenterMap[Math.round(t)] = !0;
+    for (let t = this.canvasHeightCenter - this.verticalOffset, e = this.canvasHeightCenter + this.verticalOffset; t <= e; t++)
+      this.canvasHeightCenterMap[Math.round(t)] = !0;
+  }
+  init() {
+    this.calculateCanvasCenter(), this.canvas.on("mouse:down", this.onMouseDown.bind(this)), this.canvas.on("object:moving", (t) => {
+      const e = t.target, n = e.getCenterPoint();
+      this.canvas._currentTransform && (this.isInVerticalCenter = Math.round(n.x) in this.canvasWidthCenterMap, this.isInHorizontalCenter = Math.round(n.y) in this.canvasHeightCenterMap, (this.isInHorizontalCenter || this.isInVerticalCenter) && e.setPositionByOrigin(
+        new f.Point(
+          this.isInVerticalCenter ? this.canvasWidthCenter : n.x,
+          this.isInHorizontalCenter ? this.canvasHeightCenter : n.y
+        ),
+        "center",
+        "center"
+      ));
+    }), this.canvas.on("before:render", () => {
+      this.canvas.clearContext(this.canvas.contextTop);
+    }), this.canvas.on("object:modified", () => {
+      this.isInVerticalCenter = null, this.isInHorizontalCenter = null, this.canvas.clearContext(this.canvas.contextTop), this.canvas.renderAll();
+    }), this.canvas.on("after:render", () => {
+      this.isInVerticalCenter && this.showVerticalCenterLine(), this.isInHorizontalCenter && this.showHorizontalCenterLine();
+    }), this.canvas.on("mouse:up", () => {
+      this.canvas.renderAll();
     });
   }
 }
 export {
-  b as AlignGuidelines
+  L as AlignGuidelines,
+  p as CenteringGuidelines
 };
