@@ -1,5 +1,4 @@
 import "./index.css";
-import "./module";
 import * as fabric from "fabric";
 import { AlignGuidelines } from "./module/aligning";
 import { CenteringGuidelines } from "./module/centering";

@@ -292,8 +292,8 @@ class p {
       this.canvasHeightCenterMap[Math.round(t)] = !0;
   }
   init() {
-    this.calculateCanvasCenter(), this.canvas.on("mouse:down", () => {
-      this.isInVerticalCenter = null, this.isInHorizontalCenter = null;
+    this.canvas.on("mouse:down", () => {
+      this.calculateCanvasCenter(), this.isInVerticalCenter = null, this.isInHorizontalCenter = null;
     }), this.canvas.on("object:moving", (t) => {
       const e = t.target, n = e.getCenterPoint();
       this.canvas._currentTransform && (this.isInVerticalCenter = Math.round(n.x) in this.canvasWidthCenterMap, this.isInHorizontalCenter = Math.round(n.y) in this.canvasHeightCenterMap, (this.isInHorizontalCenter || this.isInVerticalCenter) && e.setPositionByOrigin(

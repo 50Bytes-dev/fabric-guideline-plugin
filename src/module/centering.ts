@@ -88,7 +88,7 @@ export class CenteringGuidelines {
         );
     }
 
-    calculateCanvasCenter() {
+    private calculateCanvasCenter() {
         this.canvasWidthCenterMap = {};
         for (let i = this.canvasWidthCenter - this.horizontalOffset, len = this.canvasWidthCenter + this.horizontalOffset; i <= len; i++) {
             this.canvasWidthCenterMap[Math.round(i)] = true;
@@ -100,9 +100,8 @@ export class CenteringGuidelines {
     }
 
     init() {
-        this.calculateCanvasCenter();
-
         this.canvas.on("mouse:down", () => {
+            this.calculateCanvasCenter();
             this.isInVerticalCenter = null;
             this.isInHorizontalCenter = null;
         });
