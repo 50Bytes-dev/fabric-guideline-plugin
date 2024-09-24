@@ -1,5 +1,5 @@
 {
-  "name": "fabric-guideline-plugin",
+  "name": "@superduperai/fabric-guideline-plugin",
   "author": "Jin <me@caijin.tech>",
   "version": "0.0.11",
   "license": "MIT",
@@ -7,7 +7,10 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "repository": "https://github.com/caijinyc/fabric-guideline-plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/50bytes/fabric-guideline-plugin.git"
+  },
   "keywords": [
     "fabric",
     "fabricjs",
