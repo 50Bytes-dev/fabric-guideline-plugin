@@ -29,7 +29,7 @@
     "preview": "vite preview"
   },
   "peerDependencies": {
-    "fabric": "^5.2.1"
+    "fabric": "^6.4.2"
   },
   "devDependencies": {
     "@types/fabric": "^5.3.9",
